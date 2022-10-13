@@ -15,8 +15,4 @@
         "ParameterKey":"PublicSubnet3CIDR",
         "ParameterValue":"11.0.2.0/24"
     }
-    // {
-    //     "ParameterKey":"MyStacksRegion",
-    //     "ParameterValue":"us-east-2"
-    // } 
 ]
