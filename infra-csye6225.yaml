@@ -18,7 +18,14 @@ Metadata:
           - PublicSubnet1CIDR
           - PublicSubnet2CIDR
           - PublicSubnet3CIDR
+      -
+        Label: 
+          default: "Region"
+        Parameters:
+          - MyStacksRegion
         
+      
+
 # Parameters are used to to build flexible CloudFormation templates
 Parameters:
   VpcCIDR:
@@ -41,6 +48,47 @@ Parameters:
     Description: Please enter the IP range (CIDR notation) for the public subnet 3
     Type: String
 
+  MyStacksRegion:
+    Default: us-east-1
+    Description: Please enter the desired region
+    Type: String
+
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+  
+  InstanceType:
+    Description: WebServer EC2 instance type
+    Type: String
+    Default: t2.micro
+    AllowedValues: [t2.micro]
+    ConstraintDescription: must be a valid EC2 instance type.
+
+  SSHLocation:
+    Description: The IP address range that can be used to SSH to the EC2 instances
+    Type: String
+    MinLength: 9
+    MaxLength: 18
+    Default: 0.0.0.0/0
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})
+    ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+
+  LatestAmiId:
+    Description: Select the AMI
+    Type:  String
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+  
+  RootVolumeSize:
+    Description: Give the storage Size
+    Type:  Number
+    Default: 8
+
+  RootVolumeType:
+    Description: Give the storage type
+    Type:  String
+    Default: gp2
+  
 Resources:
 # Create VPC
   VPC:
@@ -142,6 +190,50 @@ Resources:
     Properties:
       RouteTableId: !Ref PublicRouteTable
       SubnetId: !Ref PublicSubnet3
+  
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref VPC
+      GroupDescription: Enable SSH access via port 22 and http access
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: !Ref 'SSHLocation'
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: '0.0.0.0/0'
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: '0.0.0.0/0'
+      - IpProtocol: tcp
+        FromPort: 8080
+        ToPort: 8080
+        CidrIp: '0.0.0.0/0'
+      - IpProtocol: tcp
+        FromPort: 3306
+        ToPort: 3306
+        CidrIp: '0.0.0.0/0'
+      
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds: 
+        - !Ref InstanceSecurityGroup
+      KeyName: !Ref KeyName
+      ImageId: !Ref LatestAmiId
+      SubnetId: !Ref PublicSubnet1
+      BlockDeviceMappings:
+       - DeviceName: /dev/sdm
+         Ebs: 
+           VolumeSize: !Ref RootVolumeSize
+           VolumeType: !Ref RootVolumeType
+           DeleteOnTermination: true    
+        
 
 Outputs:
 # Export VPC ID
