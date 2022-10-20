@@ -18,14 +18,14 @@ Metadata:
           - PublicSubnet1CIDR
           - PublicSubnet2CIDR
           - PublicSubnet3CIDR
+
       -
         Label: 
           default: "Region"
         Parameters:
           - MyStacksRegion
         
-      
-
+     
 # Parameters are used to to build flexible CloudFormation templates
 Parameters:
   VpcCIDR:
@@ -47,6 +47,7 @@ Parameters:
     Default: 10.0.3.0/28
     Description: Please enter the IP range (CIDR notation) for the public subnet 3
     Type: String
+
 
   MyStacksRegion:
     Default: us-east-1
@@ -262,4 +263,6 @@ Outputs:
     Description: Public Subnet 3 ID
     Export:
       Name: !Sub ${AWS::StackName}-PublicSubnet3
+
     Value: !Ref PublicSubnet2
+
