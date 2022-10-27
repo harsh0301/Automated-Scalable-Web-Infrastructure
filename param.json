@@ -45,7 +45,7 @@
     },
     {
         "ParameterKey":"RootVolumeType",
-        "ParameterValue":"ami-0060789fb1ee12328"
+        "ParameterValue":"gp2"
     },
     {
         "ParameterKey":"DatabaseName",
