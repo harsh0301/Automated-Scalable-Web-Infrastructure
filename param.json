@@ -1,47 +1,67 @@
 [
     {
         "ParameterKey":"VpcCIDR",
-        "ParameterValue":"10.0.0.0/16"
+        "ParameterValue":"11.0.0.0/16"
     },
     {
         "ParameterKey":"PublicSubnet1CIDR",
-        "ParameterValue":"10.0.1.0/28"
+        "ParameterValue":"11.0.0.0/24"
     },
     {
         "ParameterKey":"PublicSubnet2CIDR",
-        "ParameterValue":"10.0.2.0/28"
+        "ParameterValue":"11.0.1.0/24"
     },
     {
         "ParameterKey":"PublicSubnet3CIDR",
-        "ParameterValue":"10.0.3.0/28"
+        "ParameterValue":"11.0.2.0/24"
     },
     {
-        "ParameterKey":"MyStacksRegion",
-        "ParameterValue":"us-east-1"
+        "ParameterKey":"PrivateSubnet1CIDR",
+        "ParameterValue":"11.0.0.0/24"
+    },
+    {
+        "ParameterKey":"PrivateSubnet2CIDR",
+        "ParameterValue":"11.0.1.0/24"
+    },
+    {
+        "ParameterKey":"PrivateSubnet3CIDR",
+        "ParameterValue":"11.0.2.0/24"
     },
     {
         "ParameterKey":"InstanceType",
         "ParameterValue":"t2.micro"
     },
     {
-        "ParameterKey":"KeyName",
-        "ParameterValue":"aws"
+        "ParameterKey":"DatabaseUser",
+        "ParameterValue":"csye6225"
     },
     {
         "ParameterKey":"LatestAmiId",
-        "ParameterValue":"ami-073746aa0524c669d"
+        "ParameterValue":"ami-0060789fb1ee12328"
     },
     {
         "ParameterKey":"RootVolumeSize",
-        "ParameterValue":"16"
+        "ParameterValue":"50"
     },
     {
         "ParameterKey":"RootVolumeType",
-        "ParameterValue":"gp2"
+        "ParameterValue":"ami-0060789fb1ee12328"
     },
     {
-        "ParameterKey":"SSHLocation",
-        "ParameterValue":"0.0.0.0/0"
+        "ParameterKey":"DatabaseName",
+        "ParameterValue":"csye6225"
+    },
+    {
+        "ParameterKey":"DatabasePassword",
+        "ParameterValue":"harsh123!"
+    },
+    {
+        "ParameterKey":"S3BucketName",
+        "ParameterValue":"harsh-csye6225-neu!"
+    },
+    {
+        "ParameterKey":"envName",
+        "ParameterValue":"dev"
     }
 
 ]
