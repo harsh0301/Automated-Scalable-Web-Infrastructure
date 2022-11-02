@@ -65,6 +65,9 @@ Parameters:
     Description: Environment Name
     Type: String
     Default: dev
+  DomainName:
+    Default: "harshshah.me."
+    Type: String
 Resources:
   myVPC:
     Type: AWS::EC2::VPC
@@ -397,3 +400,14 @@ Resources:
       Path: "/"
       Roles:
       - !Ref WebAppS3IAMRole
+
+  DnsRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Ref DomainName
+      Name: !Ref DomainName
+      Comment: DNS name for my instance.
+      Type: A
+      TTL: '60'
+      ResourceRecords:
+      - !GetAtt EC2Instance.PublicIp
