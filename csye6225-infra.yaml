@@ -48,7 +48,7 @@ Parameters:
   S3BucketName:
     Description: S3 Bucket Name
     Type: String
-    Default: harsh-csye6225-neu
+    Default: harshshah-csye6225-neu
   DBName:
     Description: DB Instance Name
     Type: String
@@ -65,6 +65,10 @@ Parameters:
     Description: Environment Name
     Type: String
     Default: dev
+  DomainName:
+    Default: "harshshah.me."
+    Type: String
+
 Resources:
   myVPC:
     Type: AWS::EC2::VPC
@@ -298,7 +302,7 @@ Resources:
               export DB=${DBName}
               export HOST=${RDSInstance.Endpoint.Address}
               export AWS_BUCKET_REGION=${AWS::Region}
-              export AWS_BUCKET_NAME="${S3BucketName}.${envName}.harsh.me"
+              export AWS_BUCKET_NAME="${S3BucketName}.${envName}.harshshah.me"
             EOF
             source /etc/profile
             cd /home/ec2-user/webservice
@@ -314,7 +318,7 @@ Resources:
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Join ['', [!Ref S3BucketName,'.',!Ref envName,'.harsh.me' ]]
+      BucketName: !Join ['', [!Ref S3BucketName,'.',!Ref envName,'.harshshah.me' ]]
       AccessControl: Private
       BucketEncryption:
         ServerSideEncryptionConfiguration:
@@ -397,3 +401,14 @@ Resources:
       Path: "/"
       Roles:
       - !Ref WebAppS3IAMRole
+
+  DnsRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Ref DomainName
+      Name: !Ref DomainName
+      Comment: DNS name for my instance.
+      Type: A
+      TTL: '60'
+      ResourceRecords:
+      - !GetAtt EC2Instance.PublicIp
