@@ -304,12 +304,22 @@ Resources:
               export AWS_BUCKET_REGION=${AWS::Region}
               export AWS_BUCKET_NAME="${S3BucketName}.${envName}.harshshah.me"
             EOF
+
             source /etc/profile
-            cd /home/ec2-user/webservice
+            cd /home/ec2-user/webapp
             rm -rf node_modules
             sudo npm i
-            sudo systemctl enable myapp
-            sudo systemctl start myapp
+            sudo apt install amazon-cloudwatch-agent -y
+            wget https://s3.us-east-1.amazonaws.com/amazoncloudwatch-agent-us-east-1/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+            #install it
+            sudo dpkg -i -E ./amazon-cloudwatch-agent.deb
+            sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+                -a fetch-config \
+                -m ec2 \
+                -c file:/home/ubuntu/webapp/cloudwatch-config.json \
+                -s
+            sudo systemctl enable webapp
+            sudo systemctl start webapp
             sudo pm2 reload all --update-env
             sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
       Tags:
@@ -395,6 +405,32 @@ Resources:
               - 'sts:AssumeRole'
       Path: /
 
+  myCloudWatchAgentPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: EC2CloudWatchPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'cloudwatch:PutMetricData'
+              - 'ec2:DescribeVolumes'
+              - 'ec2:DescribeTags'
+              - 'logs:PutLogEvents'
+              - 'logs:DescribeLogStreams'
+              - 'logs:DescribeLogGroups'
+              - 'logs:CreateLogStream'
+              - 'logs:CreateLogGroup'
+            Resource: "arn:aws:logs:us-east-1:*:*"
+          - Effect: Allow
+            Action:
+              - 'ssm:GetParameter'  
+            Resource: "arn:aws:ssm:*:*:parameter/AmazonCloudWatch-*"   
+      Roles:
+      - !Ref WebAppS3IAMRole
+
+
   EC2InstanceProfile: 
     Type: "AWS::IAM::InstanceProfile"
     Properties:
@@ -402,6 +438,7 @@ Resources:
       Path: "/"
       Roles:
       - !Ref WebAppS3IAMRole
+      
 
   DnsRecord:
     Type: AWS::Route53::RecordSet
