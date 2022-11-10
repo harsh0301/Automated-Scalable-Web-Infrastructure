@@ -422,7 +422,7 @@ Resources:
               - 'logs:DescribeLogGroups'
               - 'logs:CreateLogStream'
               - 'logs:CreateLogGroup'
-            Resource: "arn:aws:logs:us-east-1:*:*"
+            Resource: "*"
           - Effect: Allow
             Action:
               - 'ssm:GetParameter'  
