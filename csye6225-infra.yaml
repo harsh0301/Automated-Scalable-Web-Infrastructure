@@ -345,7 +345,7 @@ Resources:
   #     Tags:
   #       - Key: EC2
   #         Value: ApplicationServer
-
+  
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
